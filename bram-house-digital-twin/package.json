@@ -1,0 +1,26 @@
+{
+  "name": "bram-house-digital-twin",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently --names \"vite,api\" --prefix-colors \"cyan,magenta\" \"vite\" \"node chatbot/server.js\"",
+    "dev:ui": "vite",
+    "server": "node chatbot/server.js",
+    "forecast:gen": "node scripts/generateEnergyForecast.mjs",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^5.4.0"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.111.0",
+    "@tensorflow/tfjs": "^4.22.0",
+    "concurrently": "^10.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "openai": "^6.47.0"
+  }
+}

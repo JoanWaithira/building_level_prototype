@@ -1,0 +1,279 @@
+{
+  "type": "FeatureCollection",
+  "name": "bram_house_rooms_sample",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "room_id": "LEVEL_0_001",
+        "room_name": "Woonkamer",
+        "room_number": "001",
+        "floor": "Level 0",
+        "base_height": 0,
+        "extruded_height": 3,
+        "revit_id": 900001
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              6.626922935,
+              52.380220721
+            ],
+            [
+              6.627011233,
+              52.380220721
+            ],
+            [
+              6.627011233,
+              52.380265636
+            ],
+            [
+              6.626922935,
+              52.380265636
+            ],
+            [
+              6.626922935,
+              52.380220721
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "room_id": "LEVEL_0_002",
+        "room_name": "Keuken",
+        "room_number": "002",
+        "floor": "Level 0",
+        "base_height": 0,
+        "extruded_height": 3,
+        "revit_id": 900002
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              6.627011233,
+              52.380220721
+            ],
+            [
+              6.627070099,
+              52.380220721
+            ],
+            [
+              6.627070099,
+              52.380265636
+            ],
+            [
+              6.627011233,
+              52.380265636
+            ],
+            [
+              6.627011233,
+              52.380220721
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "room_id": "LEVEL_0_003",
+        "room_name": "Hal",
+        "room_number": "003",
+        "floor": "Level 0",
+        "base_height": 0,
+        "extruded_height": 3,
+        "revit_id": 900003
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              6.626922935,
+              52.380265636
+            ],
+            [
+              6.626981801,
+              52.380265636
+            ],
+            [
+              6.626981801,
+              52.380292585
+            ],
+            [
+              6.626922935,
+              52.380292585
+            ],
+            [
+              6.626922935,
+              52.380265636
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "room_id": "LEVEL_0_004",
+        "room_name": "Berging",
+        "room_number": "004",
+        "floor": "Level 0",
+        "base_height": 0,
+        "extruded_height": 3,
+        "revit_id": 900004
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              6.626981801,
+              52.380265636
+            ],
+            [
+              6.627070099,
+              52.380265636
+            ],
+            [
+              6.627070099,
+              52.380292585
+            ],
+            [
+              6.626981801,
+              52.380292585
+            ],
+            [
+              6.626981801,
+              52.380265636
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "room_id": "LEVEL_1_101",
+        "room_name": "Slaapkamer 1",
+        "room_number": "101",
+        "floor": "Level 1",
+        "base_height": 3,
+        "extruded_height": 6,
+        "revit_id": 900101
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              6.626922935,
+              52.380220721
+            ],
+            [
+              6.626996517,
+              52.380220721
+            ],
+            [
+              6.626996517,
+              52.380265636
+            ],
+            [
+              6.626922935,
+              52.380265636
+            ],
+            [
+              6.626922935,
+              52.380220721
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "room_id": "LEVEL_1_102",
+        "room_name": "Slaapkamer 2",
+        "room_number": "102",
+        "floor": "Level 1",
+        "base_height": 3,
+        "extruded_height": 6,
+        "revit_id": 900102
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              6.626996517,
+              52.380220721
+            ],
+            [
+              6.627070099,
+              52.380220721
+            ],
+            [
+              6.627070099,
+              52.380265636
+            ],
+            [
+              6.626996517,
+              52.380265636
+            ],
+            [
+              6.626996517,
+              52.380220721
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "room_id": "LEVEL_1_103",
+        "room_name": "Badkamer",
+        "room_number": "103",
+        "floor": "Level 1",
+        "base_height": 3,
+        "extruded_height": 6,
+        "revit_id": 900103
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              6.626922935,
+              52.380265636
+            ],
+            [
+              6.627070099,
+              52.380265636
+            ],
+            [
+              6.627070099,
+              52.380292585
+            ],
+            [
+              6.626922935,
+              52.380292585
+            ],
+            [
+              6.626922935,
+              52.380265636
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

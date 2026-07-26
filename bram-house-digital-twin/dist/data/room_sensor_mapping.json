@@ -1,0 +1,10 @@
+{
+  "_comment": "Future indoor sensor mapping. Fill sensor_ids per room_id when sensors are installed. Expected API: GET /api/sensors/latest?room_id=... -> { room_id, timestamp, temperature, humidity, co2 }",
+  "LEVEL_0_001": { "sensor_ids": [], "note": "Indoor temperature, humidity, and CO2 sensors will be mapped here later" },
+  "LEVEL_0_002": { "sensor_ids": [], "note": "Indoor temperature, humidity, and CO2 sensors will be mapped here later" },
+  "LEVEL_0_003": { "sensor_ids": [], "note": "Indoor temperature, humidity, and CO2 sensors will be mapped here later" },
+  "LEVEL_0_004": { "sensor_ids": [], "note": "Indoor temperature, humidity, and CO2 sensors will be mapped here later" },
+  "LEVEL_1_101": { "sensor_ids": [], "note": "Indoor temperature, humidity, and CO2 sensors will be mapped here later" },
+  "LEVEL_1_102": { "sensor_ids": [], "note": "Indoor temperature, humidity, and CO2 sensors will be mapped here later" },
+  "LEVEL_1_103": { "sensor_ids": [], "note": "Indoor temperature, humidity, and CO2 sensors will be mapped here later" }
+}

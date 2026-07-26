@@ -1,0 +1,71 @@
+// =============================================================================
+// All values you may need to change live here.
+// =============================================================================
+
+export const APP = {
+  name: "Twinlink",
+  domain: "twinlink.eu",
+  tagline: "Connecting digital twins for Europe's communities",
+  logoPath: "/brand/twinlink-logo.png",
+  logoMarkPath: "/brand/twinlink-mark.png",
+  buildingName: "Bram House",
+  buildingLocation: "Aadorp, Netherlands",
+  projectName: "3DxVERSE",
+  projectFullName: "Digital Twin for Sustainable Living Communities",
+  deliverableRef: "D7.2 — Integration interoperable digital twin testbed",
+  introStorageKey: "twinlink_intro_seen_v1",
+  guideStorageKey: "twinlink_guide_seen_v1",
+};
+
+export const CONFIG = {
+  // --- Cesium ion -----------------------------------------------------------
+  CESIUM_ION_TOKEN:
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJlNDgxNjNjYS1kMTY1LTRhOTQtODFiZC1mYWMyNzY4OWVjN2YiLCJpZCI6MzQzOTQwLCJpYXQiOjE3NTg2MzQ0MTR9.pQiAchoUyxCsz38HgMWMnBs4ua7xTKPcbTE2s5EnbK4",
+
+  // Optional realistic 3D Tiles shell (tiled IFC on Cesium ion).
+  // Set to null to run rooms-only.
+  BUILDING_ASSET_ID: 5041854,
+
+  // --- Bram House anchor (WGS84) ---------------------------------------------
+  BUILDING_LONGITUDE: 6.626996517,
+  BUILDING_LATITUDE: 52.380256653,
+  BUILDING_HEIGHT: 0,            // metres relative to sampled ground
+  BUILDING_HEADING_DEGREES: 0,   // rotate the 3D Tiles shell
+
+  // --- Rooms GeoJSON ----------------------------------------------------------
+  USE_SAMPLE_GEOJSON: false,     // real rooms extracted from the IFC are in place
+  ROOMS_GEOJSON_PATH: "/data/bram_house_rooms.geojson",
+  SAMPLE_GEOJSON_PATH: "/data/bram_house_rooms_sample.geojson",
+
+  // --- Terrain & basemap ------------------------------------------------------
+  USE_WORLD_TERRAIN: true,       // falls back to flat ellipsoid automatically
+  DEFAULT_BASEMAP: "cesium",     // cesium | esri | street
+  // Optional — official Google Maps tiles (street basemap); omit for demo tile URL
+  GOOGLE_MAPS_API_KEY: null,
+
+  // Set true to hide IfcGeographicElement only (trees/site furniture). Off by default.
+  HIDE_IFC_LANDSCAPING: false,
+
+  // --- Context buildings (3D BAG) — off by default; IFC shell only ------------
+  SHOW_CONTEXT_BUILDINGS: false,
+  CONTEXT_TILESET_URL: "https://data.3dbag.nl/v20250903/cesium3dtiles/lod22/tileset.json",
+  OWN_BAG_PAND_ID: "NL.IMBAG.Pand.0141100000019888",
+  AADORP_RECT: { west: 6.610, south: 52.371, east: 6.645, north: 52.390 },
+  CONTEXT_RADIUS_M: 600,
+
+  // --- Energy CSVs (in public/energy/) ---------------------------------------
+  ENERGY_FILE_PATHS: {
+    battery: "/energy/battery.csv",
+    skt_daily: "/energy/Skt-2025-6-1-2026-6-1 (1).csv",
+    skt_15min: "/energy/Skt-2025-6-1-2026-6-1.csv",
+    total_power: "/energy/Total_power.csv",
+    total_gas: "/energy/Total_gas.csv",
+    water: "/energy/water.csv",
+    lstm_forecast: "/energy/lstm_import_forecast.csv",
+    lstm_forecast_meta: "/energy/lstm_import_forecast_meta.json",
+  },
+
+  // --- Future mappings (not used yet, loaded for reference) -------------------
+  ROOM_SENSOR_MAPPING_PATH: "/data/room_sensor_mapping.json",
+  ROOM_ENERGY_MAPPING_PATH: "/data/room_energy_mapping.json",
+};

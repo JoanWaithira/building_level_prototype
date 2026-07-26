@@ -1,0 +1,24 @@
+{
+  "generatedAt": "2026-07-17T08:52:49.857Z",
+  "target": "daily_grid_import_kwh",
+  "model": "lstm",
+  "lookback": 14,
+  "forecastDays": 14,
+  "split": {
+    "trainPct": 80,
+    "valPct": 10,
+    "testPct": 10,
+    "nWindows": 352,
+    "nTrain": 281,
+    "nVal": 35,
+    "nTest": 36
+  },
+  "metrics": {
+    "trainMae": 12.846246892278298,
+    "valMae": 11.131634153301828,
+    "testMae": 11.442785994128219,
+    "testRmse": 13.663853208854349
+  },
+  "forecastTotal": 561.76,
+  "note": "Chronological 80/10/10 split. Regenerated with npm run forecast:gen"
+}

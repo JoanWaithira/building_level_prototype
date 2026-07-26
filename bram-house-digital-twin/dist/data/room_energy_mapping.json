@@ -1,0 +1,10 @@
+{
+  "_comment": "Future room-level energy mapping. For now every room points at the building total.",
+  "LEVEL_0_001": { "energy_scope": "building_total", "meter": "Total_power", "note": "Room-level energy metering not connected yet" },
+  "LEVEL_0_002": { "energy_scope": "building_total", "meter": "Total_power", "note": "Room-level energy metering not connected yet" },
+  "LEVEL_0_003": { "energy_scope": "building_total", "meter": "Total_power", "note": "Room-level energy metering not connected yet" },
+  "LEVEL_0_004": { "energy_scope": "building_total", "meter": "Total_power", "note": "Room-level energy metering not connected yet" },
+  "LEVEL_1_101": { "energy_scope": "building_total", "meter": "Total_power", "note": "Room-level energy metering not connected yet" },
+  "LEVEL_1_102": { "energy_scope": "building_total", "meter": "Total_power", "note": "Room-level energy metering not connected yet" },
+  "LEVEL_1_103": { "energy_scope": "building_total", "meter": "Total_power", "note": "Room-level energy metering not connected yet" }
+}

@@ -1,0 +1,35 @@
+{
+  "_comment": "Mock appliance registry. position = room_id anchor + offsets in metres (east, north) + height above room floor. Replace 'mock' with real smart-plug/P1 feeds later via appliance_id.",
+  "appliances": [
+    { "id": "fridge",   "name": "Fridge-freezer",  "icon": "🧊", "room_id": "LEVEL_0_33", "offset": [1.2, 0.8, 0.9],  "ratedW": 150,  "profile": "always_cycling" },
+    { "id": "hob",      "name": "Induction hob",   "icon": "🍳", "room_id": "LEVEL_0_33", "offset": [-1.0, 0.5, 0.95], "ratedW": 7400, "profile": "meals" },
+    { "id": "oven",     "name": "Oven",            "icon": "♨️", "room_id": "LEVEL_0_33", "offset": [-1.0, -0.8, 0.8], "ratedW": 3600, "profile": "meals_light" },
+    { "id": "dishwash", "name": "Dishwasher",      "icon": "🍽️", "room_id": "LEVEL_0_33", "offset": [0.5, -1.2, 0.5],  "ratedW": 2200, "profile": "evening_cycle" },
+    { "id": "washer",   "name": "Washing machine", "icon": "🌀", "room_id": "LEVEL_0_6",  "offset": [0.6, 0.4, 0.6],   "ratedW": 2400, "profile": "morning_cycle" },
+    { "id": "dryer",    "name": "Tumble dryer",    "icon": "🌬️", "room_id": "LEVEL_0_6",  "offset": [-0.6, 0.4, 0.6],  "ratedW": 2600, "profile": "morning_cycle_late" },
+    { "id": "tv",       "name": "TV & media",      "icon": "📺", "room_id": "LEVEL_0_1",  "offset": [1.5, -1.0, 0.9],  "ratedW": 180,  "profile": "evening" },
+    { "id": "pc",       "name": "Office PC setup", "icon": "🖥️", "room_id": "LEVEL_0_34", "offset": [0.4, 0.3, 0.8],   "ratedW": 350,  "profile": "workday" },
+    { "id": "boiler",   "name": "Boiler / CV",     "icon": "🔥", "room_id": "LEVEL_0_7",  "offset": [0.3, -0.5, 1.4],  "ratedW": 120,  "profile": "heating" },
+    {
+      "id": "evse",
+      "name": "EV charger",
+      "icon": "🚗",
+      "room_id": null,
+      "locationLabel": "Garage wall · driveway (south side)",
+      "outsidePlacement": {
+        "wall": "south",
+        "along": 0.62,
+        "height": 0.55,
+        "standoff": 4.5,
+        "eyeLift": 1.3,
+        "lateralOffset": 3.0
+      },
+      "view": {
+        "pitchDeg": -12,
+        "duration": 1.5
+      },
+      "ratedW": 11000,
+      "profile": "night_charge"
+    }
+  ]
+}

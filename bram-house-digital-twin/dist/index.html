@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Twinlink.eu — building-level digital twin for Bram House, Aadorp. Explore energy performance and indoor air quality (IAQ) in 3D, within the EU 3DxVERSE Sustainable Living Communities testbed." />
+  <meta name="theme-color" content="#0a0e18" />
+  <title>Twinlink.eu — Bram House Digital Twin</title>
+  <link rel="icon" type="image/png" href="/brand/twinlink-mark.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cesium.com/downloads/cesiumjs/releases/1.126/Build/Cesium/Cesium.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+  <link href="https://cesium.com/downloads/cesiumjs/releases/1.126/Build/Cesium/Widgets/widgets.css" rel="stylesheet" />
+  <script type="module" crossorigin src="/assets/index-DV5FAiF4.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-CB9O4DH_.css">
+</head>
+<body>
+  <!-- Loading splash -->
+  <div id="appLoading" class="app-loading">
+    <div class="load-card">
+      <div class="load-brand">
+        <img class="brand-logo brand-logo-load" src="/brand/twinlink-logo.png" alt="twinlink.eu — connecting digital twins for Europe's communities" height="88" />
+      </div>
+      <p class="load-msg">Initializing digital twin…</p>
+      <div class="load-bar"><div class="load-bar-fill"></div></div>
+      <p class="load-sub">Bram House · Aadorp, Netherlands · 3DxVERSE building-level twin</p>
+    </div>
+  </div>
+
+  <!-- App header -->
+  <header id="appHeader" class="app-header"></header>
+
+  <div id="appLayout" class="app-layout">
+    <button type="button" id="toggleLeft" class="rail-toggle rail-toggle-left" title="Toggle building explorer">Explore</button>
+    <aside id="leftRail" class="rail rail-left">
+      <div id="roomNav"></div>
+    </aside>
+
+    <div id="viewerStage" class="viewer-stage">
+      <div id="cesiumContainer"></div>
+      <div id="tourCaption"></div>
+      <div id="roomEntryToast" aria-live="polite" role="status"></div>
+      <div id="iaqAlertBar" class="iaq-alert-bar hidden" aria-live="polite"></div>
+      <div id="iaqQuestHud"></div>
+      <div id="roomTooltip"></div>
+      <aside id="roomPanel" class="detail-panel"></aside>
+      <aside id="sceneDrawer" class="scene-drawer">
+        <div id="viewPanel"></div>
+      </aside>
+      <footer id="bottomBar" class="bottom-bar">
+        <div id="rnExitBar" class="exit-room-bar" style="display:none">
+          <span class="exit-room-label">Viewing <strong id="rnExitLabel">room</strong></span>
+          <button type="button" class="tbtn tbtn-sm" id="rnExitBtn">Exit ↩</button>
+        </div>
+        <div class="bottom-bar-main">
+          <div id="toolbar"></div>
+        </div>
+      </footer>
+    </div>
+
+    <button type="button" id="toggleRight" class="rail-toggle rail-toggle-right" title="Toggle energy panel">Energy</button>
+    <aside id="rightRail" class="rail rail-right">
+      <div id="ecoHud"></div>
+      <div id="dashboard" class="panel panel-compact"><h3>Loading…</h3></div>
+    </aside>
+  </div>
+
+  <!-- Explore guide -->
+  <div id="introModal" class="intro-modal"></div>
+  <div id="guideModal" class="guide-modal"></div>
+
+  <!-- Footer credit -->
+  <footer id="appFooter" class="app-footer"></footer>
+
+  <!-- Full-screen energy analytics workspace -->
+  <div id="chartsOverlay" class="charts-overlay">
+    <div class="charts-topbar">
+      <div class="charts-topbar-main">
+        <button id="chartsClose" class="charts-back" type="button" aria-label="Back to digital twin">
+          ← Back to twin
+        </button>
+        <div class="charts-title-block">
+          <p class="charts-kicker">Twinlink.eu · Energy Analytics</p>
+          <h2>Bram House <span class="badge">building-level meters</span></h2>
+          <p id="chartsPeriod" class="charts-period"></p>
+        </div>
+      </div>
+      <div id="chartsHorizon" class="horizonBar charts-horizon"></div>
+    </div>
+
+    <div class="charts-rationale">
+      Charts, time ranges, and retrofit scenarios — press <kbd>Esc</kbd> or <strong>Back to twin</strong> to return.
+    </div>
+
+    <nav id="chartsTabs" class="chartsTabs" aria-label="Energy dashboard sections">
+      <button class="charts-tab active" data-tab="overview">Overview</button>
+      <button class="charts-tab" data-tab="electricity">Electricity</button>
+      <button class="charts-tab" data-tab="solar">Solar &amp; Battery</button>
+      <button class="charts-tab" data-tab="utilities">Gas &amp; Water</button>
+      <button class="charts-tab" data-tab="scenarios">Scenarios</button>
+      <button class="charts-tab" data-tab="decisions">Decisions</button>
+      <button class="charts-tab" data-tab="forecast">Forecast</button>
+    </nav>
+
+    <div id="chartsStats" class="charts-stats"></div>
+
+    <div class="charts-body">
+
+    <section class="chartSection active" data-section="overview">
+      <div class="chartsGrid">
+        <div class="chartCard hero">
+          <h4>Power bought vs sold</h4>
+          <p class="chartDesc">How much electricity came from the grid each day, and how much you sent back (e.g. from solar).</p>
+          <div class="chartBox tall"><canvas id="chElec"></canvas></div>
+        </div>
+        <div class="chartCard">
+          <h4>Overall balance</h4>
+          <p class="chartDesc">Your total power bought vs sold in this period — a quick snapshot of grid dependence.</p>
+          <div class="chartBox short"><canvas id="chBalance"></canvas></div>
+        </div>
+        <div class="chartCard">
+          <h4>Is usage going up or down?</h4>
+          <p class="chartDesc">Smoothed daily trend — rising means you are using more from the grid over time.</p>
+          <div class="chartBox"><canvas id="chTrend"></canvas></div>
+        </div>
+        <div class="chartCard">
+          <h4>Which days use the most?</h4>
+          <p class="chartDesc">Your typical electricity use on each day of the week.</p>
+          <div class="chartBox"><canvas id="chWeekday"></canvas></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="chartSection" data-section="electricity">
+      <div class="chartsGrid">
+        <div class="chartCard hero">
+          <h4>Net grid balance — were you buying or selling?</h4>
+          <p class="chartDesc">This shows the <em>difference</em> between power bought and power sold each day.</p>
+          <div class="chartHelp">
+            <p>Think of it as your daily electricity “bill balance” with the grid:</p>
+            <ul class="legendPlain">
+              <li><span class="dot buy"></span> <strong>Blue bars (above zero)</strong> — you used more than you produced. The building drew power <em>from</em> the grid.</li>
+              <li><span class="dot sell"></span> <strong>Green bars (below zero)</strong> — you produced more than you used. Extra power went <em>back</em> to the grid.</li>
+            </ul>
+            <p class="chartHelpNote">Calculated as: power bought − power sold. Zero means they balanced out that day.</p>
+          </div>
+          <div class="chartBox tall"><canvas id="chNet"></canvas></div>
+        </div>
+        <div class="chartCard">
+          <h4>Day-rate vs night-rate use</h4>
+          <p class="chartDesc">Split between peak (day) and off-peak (night) tariff — useful for spotting when most power is consumed.</p>
+          <div class="chartBox"><canvas id="chTariff"></canvas></div>
+        </div>
+        <div class="chartCard">
+          <h4>Buying vs selling days</h4>
+          <p class="chartDesc">How many days you were a net buyer from the grid vs a net seller back to it.</p>
+          <div class="chartBox short"><canvas id="chBuyerSeller"></canvas></div>
+        </div>
+        <div class="chartCard">
+          <h4>Monthly summary</h4>
+          <p class="chartDesc">Total power bought and sold per month.</p>
+          <div class="chartBox"><canvas id="chElecMonthly"></canvas></div>
+        </div>
+        <details class="advancedBlock wide">
+          <summary>Technical details (for advanced users)</summary>
+          <div class="chartsGrid inner">
+            <div class="chartCard">
+              <h4>Peak power draw</h4>
+              <p class="chartDesc">Highest power demand recorded each day.</p>
+              <div class="chartBox"><canvas id="chPeak"></canvas></div>
+            </div>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <section class="chartSection" data-section="solar">
+      <div class="chartsGrid">
+        <div class="chartCard hero">
+          <h4>Power sent to the grid</h4>
+          <p class="chartDesc">Daily surplus exported — usually from solar when production exceeds building use.</p>
+          <div class="chartBox tall"><canvas id="chSolarExport"></canvas></div>
+        </div>
+        <div class="chartCard">
+          <h4>How much did your own system help?</h4>
+          <p class="chartDesc">When this line is higher, more of your electricity need was covered by on-site generation.</p>
+          <div class="chartBox"><canvas id="chSelfSuff"></canvas></div>
+        </div>
+        <div class="chartCard">
+          <h4>Best days for solar export</h4>
+          <p class="chartDesc">Which weekdays typically send the most power back to the grid.</p>
+          <div class="chartBox"><canvas id="chSolarWeekday"></canvas></div>
+        </div>
+        <div class="chartCard hero">
+          <h4>Battery level</h4>
+          <p class="chartDesc">How full your home battery was over time (100% = fully charged).</p>
+          <div class="chartBox"><canvas id="chBattery"></canvas></div>
+        </div>
+        <div class="chartCard">
+          <h4>Battery activity</h4>
+          <p class="chartDesc">Daily charge stored vs energy released — shows how actively the battery is used.</p>
+          <div class="chartBox"><canvas id="chBatteryFlow"></canvas></div>
+        </div>
+        <div class="chartCard">
+          <h4>Battery daily swing</h4>
+          <p class="chartDesc">How much the battery level changed each day — larger swings mean heavier use.</p>
+          <div class="chartBox"><canvas id="chBatterySwing"></canvas></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="chartSection" data-section="utilities">
+      <div class="chartsGrid">
+        <div class="chartCard hero">
+          <h4>Gas use</h4>
+          <p class="chartDesc" id="chGasDesc">Daily gas consumption.</p>
+          <div class="chartBox"><canvas id="chGas"></canvas></div>
+        </div>
+        <div class="chartCard">
+          <h4>Gas — typical weekdays</h4>
+          <p class="chartDesc">Average gas use per day of the week — helps spot heating patterns.</p>
+          <div class="chartBox"><canvas id="chGasWeekday"></canvas></div>
+        </div>
+        <div class="chartCard hero">
+          <h4>Water use</h4>
+          <p class="chartDesc" id="chWaterDesc">Daily water consumption.</p>
+          <div class="chartBox"><canvas id="chWater"></canvas></div>
+        </div>
+        <div class="chartCard">
+          <h4>Water — typical weekdays</h4>
+          <p class="chartDesc">Average water use per day of the week.</p>
+          <div class="chartBox"><canvas id="chWaterWeekday"></canvas></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="chartSection" data-section="scenarios">
+      <div class="scenario-intro">
+        <h3>Retrofit &amp; what-if scenarios</h3>
+        <p>
+          Model changes against your <strong>real historical meter data</strong> — not generic averages.
+          Adjust sliders to see estimated bill impact, payback, and CO₂ reduction before investing in
+          extra solar, battery storage, or a heat pump.
+        </p>
+      </div>
+      <div class="scenario-layout">
+        <div class="scenario-controls chartCard">
+          <h4>Configure scenario</h4>
+          <p class="chartDesc">All results are recalculated instantly from the same CSV period as the charts above.</p>
+          <div class="scenario-slider">
+            <label for="scPanels">Extra solar panels</label>
+            <input type="range" id="scPanels" min="0" max="20" value="0" />
+            <span id="scPanelsVal" class="scenario-val">0 panels</span>
+          </div>
+          <div class="scenario-slider">
+            <label for="scBattery">Extra battery capacity</label>
+            <input type="range" id="scBattery" min="0" max="15" value="0" />
+            <span id="scBatteryVal" class="scenario-val">0 kWh</span>
+          </div>
+          <label class="scenario-check">
+            <input type="checkbox" id="scHeatPump" />
+            Replace gas heating with an electric heat pump
+          </label>
+          <p class="scenario-assumptions muted" id="scAssumptions"></p>
+        </div>
+        <div class="scenario-results chartCard">
+          <h4>Projected annual outcome</h4>
+          <div id="scKpis" class="scenario-kpis"></div>
+          <div class="chartBox scenario-chart"><canvas id="chScenario"></canvas></div>
+          <table class="props scenario-table" id="scTable"></table>
+        </div>
+      </div>
+    </section>
+
+    <section class="chartSection" data-section="decisions" id="decisionsPrintRoot">
+      <div class="decisions-header">
+        <div class="scenario-intro">
+          <h3>Decision briefing</h3>
+          <p>
+            Period energy costs, indoor air exposure hours, and fixed retrofit packages for side-by-side
+            comparison. Use <strong>Print briefing</strong> for a meeting handout (browser print / PDF).
+          </p>
+        </div>
+        <button type="button" class="tbtn" id="decisionsPrintBtn">Print briefing</button>
+      </div>
+
+      <div class="decisions-block chartCard">
+        <h4>Energy cost (€)</h4>
+        <p class="chartDesc" id="decCostDesc">
+          Daily bill from grid import, feed-in credit, and gas — same prices as Scenarios.
+        </p>
+        <div id="decCostKpis" class="scenario-kpis"></div>
+        <div class="chartBox"><canvas id="chDecCost"></canvas></div>
+      </div>
+
+      <div class="decisions-block chartCard">
+        <h4>IAQ exposure (7-day history)</h4>
+        <p class="chartDesc">Elevated = CO₂ &gt; 800 ppm · Critical = CO₂ &gt; 1000 ppm. Hours summed across rooms.</p>
+        <div id="decExposureKpis" class="scenario-kpis"></div>
+        <table class="props scenario-table decisions-table" id="decExposureTable"></table>
+      </div>
+
+      <div class="decisions-block chartCard">
+        <h4>Retrofit package comparison</h4>
+        <p class="chartDesc">
+          Fixed packages (not live sliders). Comfort is a heating comfort proxy (1–5) — not measured IAQ.
+        </p>
+        <div class="chartBox scenario-chart"><canvas id="chDecPackages"></canvas></div>
+        <table class="props scenario-table decisions-table" id="decCompareTable"></table>
+        <p class="muted decisions-footnote" id="decAssumptions"></p>
+      </div>
+    </section>
+
+    <section class="chartSection" data-section="forecast">
+      <div class="scenario-intro">
+        <h3>LSTM energy forecast</h3>
+        <p>
+          Simple LSTM on daily grid import (kWh). Data is split chronologically
+          <strong>80% train · 10% validation · 10% test</strong>, then rolled forward for a 14-day outlook.
+        </p>
+      </div>
+      <div class="decisions-block chartCard">
+        <div class="forecast-toolbar">
+          <button type="button" class="tbtn" id="forecastRunBtn">Run LSTM forecast</button>
+          <p class="muted forecast-status" id="forecastStatus">Click run to train in the browser (TensorFlow.js).</p>
+        </div>
+        <div id="forecastKpis" class="scenario-kpis"></div>
+        <div class="chartBox tall"><canvas id="chForecast"></canvas></div>
+        <p class="chartDesc" id="forecastNote"></p>
+        <table class="props scenario-table decisions-table" id="forecastMetricsTable"></table>
+      </div>
+    </section>
+    </div>
+  </div>
+
+  <!-- Full-screen IAQ analytics workspace -->
+  <div id="iaqOverlay" class="charts-overlay iaq-overlay">
+    <div class="charts-topbar">
+      <div class="charts-topbar-main">
+        <button id="iaqClose" class="charts-back" type="button" aria-label="Back to digital twin">
+          ← Back to twin
+        </button>
+        <div class="charts-title-block">
+          <p class="charts-kicker">Twinlink.eu · Indoor Air Quality</p>
+          <h2>Bram House <span class="badge">room sensors</span></h2>
+          <p class="charts-period muted">7-day hourly history · trends, alert rules &amp; 3D replay</p>
+        </div>
+      </div>
+      <div id="iaqHorizon" class="horizonBar charts-horizon"></div>
+    </div>
+
+    <div class="charts-rationale">
+      Room-level CO₂, temperature &amp; humidity history — set alert rules, then replay any hour on the 3D model.
+    </div>
+
+    <nav id="iaqTabs" class="chartsTabs" aria-label="IAQ dashboard sections">
+      <button class="charts-tab active" data-tab="trends">Trends</button>
+      <button class="charts-tab" data-tab="alerts">Alerts &amp; rules</button>
+      <button class="charts-tab" data-tab="replay">Replay</button>
+    </nav>
+
+    <div class="charts-body">
+      <section class="iaq-section chartSection active" data-section="trends">
+        <div class="iaq-trends-toolbar">
+          <label for="iaqRoomSelect">Room</label>
+          <select id="iaqRoomSelect" class="iaq-room-select"></select>
+        </div>
+        <div id="iaqTrendStats" class="iaq-trend-stats"></div>
+        <div class="chartCard hero">
+          <h4>CO₂ · temperature · humidity</h4>
+          <p class="chartDesc">Hourly readings for the selected room. Click a point to replay that moment on the twin.</p>
+          <div class="chartBox tall"><canvas id="iaqTrendChart"></canvas></div>
+        </div>
+      </section>
+
+      <section class="iaq-section chartSection" data-section="alerts">
+        <div class="iaq-alerts-grid">
+          <div class="chartCard">
+            <h4>Alert rules</h4>
+            <p class="chartDesc">Toggle rules on or off. Violations appear live and during IAQ replay.</p>
+            <div id="iaqRulesList" class="iaq-rules-list"></div>
+            <div id="iaqThresholdsRef" class="iaq-thresholds-ref"></div>
+          </div>
+          <div class="chartCard">
+            <h4>Active alerts (live)</h4>
+            <p class="chartDesc">Current readings evaluated against your rules.</p>
+            <div id="iaqLiveAlerts" class="iaq-live-alerts"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="iaq-section chartSection" data-section="replay">
+        <div class="chartCard hero">
+          <h4>Building-wide CO₂ replay</h4>
+          <p class="chartDesc">Average CO₂ across all rooms — click to scrub the 3D twin, or use the bottom bar.</p>
+          <div class="chartBox tall"><canvas id="iaqReplayChart"></canvas></div>
+          <div class="iaq-replay-actions">
+            <button type="button" class="tbtn" id="iaqStartReplay">Start IAQ replay on twin</button>
+            <p id="iaqReplayStatus" class="muted iaq-replay-status"></p>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,982 @@
+{
+  "type": "FeatureCollection",
+  "name": "bram_house_rooms",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "room_id": "LEVEL_0_1",
+        "room_name": "Woonkamer",
+        "room_number": "1",
+        "floor": "Level 0",
+        "base_height": 0.009,
+        "extruded_height": 4.009,
+        "revit_id": 174,
+        "ifc_guid": "3KPDpSV593ZQIklxhl_LBZ"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              6.627159108,
+              52.380243228
+            ],
+            [
+              6.627155073,
+              52.380254816
+            ],
+            [
+              6.627191136,
+              52.380272338
+            ],
+            [
+              6.627208719,
+              52.380267333
+            ],
+            [
+              6.627218853,
+              52.380272257
+            ],
+            [
+              6.627250655,
+              52.380247869
+            ],
+            [
+              6.627263321,
+              52.380254023
+            ],
+            [
+              6.627289991,
+              52.38023357
+            ],
+            [
+              6.62728101,
+              52.380229206
+            ],
+            [
+              6.627278994,
+              52.380230753
+            ],
+            [
+              6.627226143,
+              52.380205074
+            ],
+            [
+              6.62719938,
+              52.380225596
+            ],
+            [
+              6.627163804,
+              52.38020831
+            ],
+            [
+              6.627134109,
+              52.380231082
+            ],
+            [
+              6.627159108,
+              52.380243228
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "room_id": "LEVEL_0_2",
+        "room_name": "Hal",
+        "room_number": "2",
+        "floor": "Level 0",
+        "base_height": 0.009,
+        "extruded_height": 4.009,
+        "revit_id": 204,
+        "ifc_guid": "3KPDpSV593ZQIklxhl_LBa"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              6.627199731,
+              52.380180759
+            ],
+            [
+              6.627164721,
+              52.380207607
+            ],
+            [
+              6.627199145,
+              52.380224334
+            ],
+            [
+              6.627234157,
+              52.380197486
+            ],
+            [
+              6.627199731,
+              52.380180759
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "room_id": "LEVEL_0_4",
+        "room_name": "Wc",
+        "room_number": "4",
+        "floor": "Level 0",
+        "base_height": 0.009,
+        "extruded_height": 4.009,
+        "revit_id": 230,
+        "ifc_guid": "3KPDpSV593ZQIklxhl_LBw"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              6.627211645,
+              52.380171622
+            ],
+            [
+              6.627200647,
+              52.380180056
+            ],
+            [
+              6.627217458,
+              52.380188224
+            ],
+            [
+              6.627228456,
+              52.38017979
+            ],
+            [
+              6.627211645,
+              52.380171622
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "room_id": "LEVEL_0_5",
+        "room_name": "Kast",
+        "room_number": "5",
+        "floor": "Level 0",
+        "base_height": 0.009,
+        "extruded_height": 4.009,
+        "revit_id": 258,
+        "ifc_guid": "3KPDpSV593ZQIklxhl_LB$"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              6.627218609,
+              52.380188783
+            ],
+            [
+              6.627235074,
+              52.380196783
+            ],
+            [
+              6.627246072,
+              52.380188349
+            ],
+            [
+              6.627229607,
+              52.380180349
+            ],
+            [
+              6.627218609,
+              52.380188783
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "room_id": "LEVEL_0_6",
+        "room_name": "Wasruimte",
+        "room_number": "6",
+        "floor": "Level 0",
+        "base_height": 0.009,
+        "extruded_height": 4.009,
+        "revit_id": 289,
+        "ifc_guid": "3KPDpSV593ZQIklxhl_LBm"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              6.62723113,
+              52.380101867
+            ],
+            [
+              6.627197403,
+              52.380127732
+            ],
+            [
+              6.627245648,
+              52.380151173
+            ],
+            [
+              6.627279375,
+              52.380125308
+            ],
+            [
+              6.62723113,
+              52.380101867
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "room_id": "LEVEL_0_7",
+        "room_name": "Bijkeuken",
+        "room_number": "7",
+        "floor": "Level 0",
+        "base_height": 0.009,
+        "extruded_height": 4.009,
+        "revit_id": 313,
+        "ifc_guid": "3KPDpSV593ZQIklxhl_LBr"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              6.627246799,
+              52.380151732
+            ],
+            [
+              6.627270517,
+              52.380163256
+            ],
+            [
+              6.627304245,
+              52.380137392
+            ],
+            [
+              6.627280527,
+              52.380125868
+            ],
+            [
+              6.627246799,
+              52.380151732
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "room_id": "LEVEL_0_8",
+        "room_name": "WC",
+        "room_number": "8",
+        "floor": "Level 0",
+        "base_height": 0.009,
+        "extruded_height": 4.009,
+        "revit_id": 337,
+        "ifc_guid": "3KPDpSV593ZQIklxhl_LBs"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              6.627204824,
+              52.380102805
+            ],
+            [
+              6.627216494,
+              52.380108475
+            ],
+            [
+              6.627229462,
+              52.38009853
+            ],
+            [
+              6.627217792,
+              52.38009286
+            ],
+            [
+              6.627204824,
+              52.380102805
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "room_id": "LEVEL_0_9",
+        "room_name": "Tuinkamer",
+        "room_number": "9",
+        "floor": "Level 0",
+        "base_height": 0.009,
+        "extruded_height": 4.009,
+        "revit_id": 361,
+        "ifc_guid": "3KPDpSV593ZQIklxhl_LBB"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              6.627218709,
+              52.380092157
+            ],
+            [
+              6.627280387,
+              52.380122126
+            ],
+            [
+              6.627374466,
+              52.380049979
+            ],
+            [
+              6.627312788,
+              52.380020011
+            ],
+            [
+              6.627218709,
+              52.380092157
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "room_id": "LEVEL_1_16",
+        "room_name": "Inloopkast",
+        "room_number": "16",
+        "floor": "Level 1",
+        "base_height": 3.009,
+        "extruded_height": 7.009,
+        "revit_id": 402,
+        "ifc_guid": "3KPDpSV593ZQIklxhl_LAe"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              6.627243867,
+              52.380153981
+            ],
+            [
+              6.627213805,
+              52.380177034
+            ],
+            [
+              6.627224168,
+              52.380182069
+            ],
+            [
+              6.627241582,
+              52.380168715
+            ],
+            [
+              6.627253096,
+              52.38017431
+            ],
+            [
+              6.627265743,
+              52.380164611
+            ],
+            [
+              6.627243867,
+              52.380153981
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "room_id": "LEVEL_1_18",
+        "room_name": "Slaapkamer",
+        "room_number": "18",
+        "floor": "Level 1",
+        "base_height": 3.009,
+        "extruded_height": 7.009,
+        "revit_id": 428,
+        "ifc_guid": "189ZU7WqfDRhSlAvOcn60O"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              6.627183735,
+              52.380255194
+            ],
+            [
+              6.627218853,
+              52.380272257
+            ],
+            [
+              6.627249739,
+              52.380248571
+            ],
+            [
+              6.627214621,
+              52.380231508
+            ],
+            [
+              6.627183735,
+              52.380255194
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "room_id": "LEVEL_1_19",
+        "room_name": "Badkamer",
+        "room_number": "19",
+        "floor": "Level 1",
+        "base_height": 3.009,
+        "extruded_height": 7.009,
+        "revit_id": 452,
+        "ifc_guid": "189ZU7WqfDRhSlAvOcn60T"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              6.627215537,
+              52.380230805
+            ],
+            [
+              6.627257564,
+              52.380251225
+            ],
+            [
+              6.627284234,
+              52.380230773
+            ],
+            [
+              6.627242208,
+              52.380210353
+            ],
+            [
+              6.627215537,
+              52.380230805
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "room_id": "LEVEL_1_20",
+        "room_name": "Slaapkamer",
+        "room_number": "20",
+        "floor": "Level 1",
+        "base_height": 3.009,
+        "extruded_height": 7.009,
+        "revit_id": 483,
+        "ifc_guid": "189ZU7WqfDRhSlAvOcn60Y"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              6.627134109,
+              52.380231082
+            ],
+            [
+              6.627182584,
+              52.380254634
+            ],
+            [
+              6.627202472,
+              52.380239383
+            ],
+            [
+              6.627189823,
+              52.380233237
+            ],
+            [
+              6.627194131,
+              52.380229934
+            ],
+            [
+              6.627187338,
+              52.380226633
+            ],
+            [
+              6.627192836,
+              52.380222417
+            ],
+            [
+              6.627163804,
+              52.38020831
+            ],
+            [
+              6.627134109,
+              52.380231082
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "room_id": "LEVEL_1_21",
+        "room_name": "Slaapkamer",
+        "room_number": "21",
+        "floor": "Level 1",
+        "base_height": 3.009,
+        "extruded_height": 7.009,
+        "revit_id": 507,
+        "ifc_guid": "189ZU7WqfDRhSlAvOcn60d"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              6.62722217,
+              52.380199469
+            ],
+            [
+              6.627278242,
+              52.380226713
+            ],
+            [
+              6.627322967,
+              52.380192415
+            ],
+            [
+              6.627266895,
+              52.38016517
+            ],
+            [
+              6.62722217,
+              52.380199469
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "room_id": "LEVEL_1_23",
+        "room_name": "Room",
+        "room_number": "23",
+        "floor": "Level 1",
+        "base_height": 3.009,
+        "extruded_height": 7.009,
+        "revit_id": 539,
+        "ifc_guid": "189ZU7WqfDRhSlAvOcn60f"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              6.627224403,
+              52.380183331
+            ],
+            [
+              6.627212889,
+              52.380177737
+            ],
+            [
+              6.627199141,
+              52.38018828
+            ],
+            [
+              6.627221018,
+              52.380198909
+            ],
+            [
+              6.627252179,
+              52.380175013
+            ],
+            [
+              6.627241816,
+              52.380169978
+            ],
+            [
+              6.627224403,
+              52.380183331
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "room_id": "LEVEL_1_26",
+        "room_name": "Overloop",
+        "room_number": "26",
+        "floor": "Level 1",
+        "base_height": 3.009,
+        "extruded_height": 7.009,
+        "revit_id": 587,
+        "ifc_guid": "0uB5a6nTTDHQHfSV4wtjQl"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              6.627183286,
+              52.380200439
+            ],
+            [
+              6.627211783,
+              52.380214285
+            ],
+            [
+              6.627207155,
+              52.380217834
+            ],
+            [
+              6.627206003,
+              52.380217275
+            ],
+            [
+              6.627209715,
+              52.380214428
+            ],
+            [
+              6.62719192,
+              52.380205782
+            ],
+            [
+              6.627189903,
+              52.380207328
+            ],
+            [
+              6.62717471,
+              52.380199946
+            ],
+            [
+              6.62716472,
+              52.380207607
+            ],
+            [
+              6.627201697,
+              52.380225574
+            ],
+            [
+              6.627191891,
+              52.380233094
+            ],
+            [
+              6.627203388,
+              52.38023868
+            ],
+            [
+              6.627241056,
+              52.380209793
+            ],
+            [
+              6.627198225,
+              52.380188982
+            ],
+            [
+              6.627183286,
+              52.380200439
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "room_id": "LEVEL_1_27",
+        "room_name": "Slaapkamer",
+        "room_number": "27",
+        "floor": "Level 1",
+        "base_height": 3.009,
+        "extruded_height": 7.009,
+        "revit_id": 611,
+        "ifc_guid": "0uB5a6nTTDHQHfSV4wtjO$"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              6.62719557,
+              52.380129137
+            ],
+            [
+              6.62713389,
+              52.380176438
+            ],
+            [
+              6.627182135,
+              52.380199879
+            ],
+            [
+              6.627243815,
+              52.380152578
+            ],
+            [
+              6.62719557,
+              52.380129137
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "room_id": "LEVEL_1_30",
+        "room_name": "Badkamer",
+        "room_number": "30",
+        "floor": "Level 1",
+        "base_height": 3.009,
+        "extruded_height": 7.009,
+        "revit_id": 649,
+        "ifc_guid": "2JPmwA4fr0RwdGM3pTH4Rl"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              6.627239143,
+              52.380148012
+            ],
+            [
+              6.627270517,
+              52.380163256
+            ],
+            [
+              6.627280174,
+              52.380155851
+            ],
+            [
+              6.627259909,
+              52.380146004
+            ],
+            [
+              6.627260826,
+              52.380145302
+            ],
+            [
+              6.627281091,
+              52.380155148
+            ],
+            [
+              6.627304245,
+              52.380137392
+            ],
+            [
+              6.62727287,
+              52.380122147
+            ],
+            [
+              6.627239143,
+              52.380148012
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "room_id": "LEVEL_1_31",
+        "room_name": "Loopkast",
+        "room_number": "31",
+        "floor": "Level 1",
+        "base_height": 3.009,
+        "extruded_height": 7.009,
+        "revit_id": 673,
+        "ifc_guid": "2JPmwA4fr0RwdGM3pTH4RY"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              6.62723684,
+              52.380146893
+            ],
+            [
+              6.627270567,
+              52.380121028
+            ],
+            [
+              6.62723113,
+              52.380101867
+            ],
+            [
+              6.627197403,
+              52.380127731
+            ],
+            [
+              6.62723684,
+              52.380146893
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "room_id": "LEVEL_0_32",
+        "room_name": "Eetkamer",
+        "room_number": "32",
+        "floor": "Level 0",
+        "base_height": 0.009,
+        "extruded_height": 4.009,
+        "revit_id": 704,
+        "ifc_guid": "1KJV6bGHD1c9AgFR7A$0OF"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              6.627276226,
+              52.38022826
+            ],
+            [
+              6.627322967,
+              52.380192415
+            ],
+            [
+              6.627270855,
+              52.380167094
+            ],
+            [
+              6.627245193,
+              52.380186774
+            ],
+            [
+              6.62724814,
+              52.380188206
+            ],
+            [
+              6.62722706,
+              52.380204371
+            ],
+            [
+              6.627276226,
+              52.38022826
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "room_id": "LEVEL_0_33",
+        "room_name": "Keuken",
+        "room_number": "33",
+        "floor": "Level 0",
+        "base_height": 0.009,
+        "extruded_height": 4.009,
+        "revit_id": 728,
+        "ifc_guid": "1KJV6bGHD1c9AgFR7A$0O8"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              6.627238224,
+              52.380151239
+            ],
+            [
+              6.627212562,
+              52.380170919
+            ],
+            [
+              6.627245193,
+              52.380186774
+            ],
+            [
+              6.627270855,
+              52.380167094
+            ],
+            [
+              6.627238224,
+              52.380151239
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "room_id": "LEVEL_0_34",
+        "room_name": "Kantoor",
+        "room_number": "34",
+        "floor": "Level 0",
+        "base_height": 0.009,
+        "extruded_height": 4.009,
+        "revit_id": 752,
+        "ifc_guid": "1F4ptF3ZP4$BpTWUF1tOgI"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              6.627159918,
+              52.380156477
+            ],
+            [
+              6.627199987,
+              52.380175946
+            ],
+            [
+              6.627236555,
+              52.380147903
+            ],
+            [
+              6.627196486,
+              52.380128435
+            ],
+            [
+              6.627159918,
+              52.380156477
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}
