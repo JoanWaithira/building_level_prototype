@@ -1,0 +1,27 @@
+{
+  "generatedAt": "2026-07-30T13:08:50",
+  "target": "water",
+  "label": "Daily water usage",
+  "unit": "L",
+  "model": "lstm",
+  "lookback": 14,
+  "forecastDays": 30,
+  "split": {
+    "trainPct": 80,
+    "valPct": 10,
+    "testPct": 10,
+    "nWindows": 351,
+    "nTrain": 280,
+    "nVal": 35,
+    "nTest": 36
+  },
+  "metrics": {
+    "trainMae": 167.9361114501953,
+    "valMae": 141.01287841796875,
+    "testMae": 164.50999450683594,
+    "testRmse": 198.806396484375
+  },
+  "forecastTotal": 11443.237,
+  "sourceFile": "water.csv",
+  "note": "Chronological 80/10/10 split. Regenerate by re-running this notebook."
+}

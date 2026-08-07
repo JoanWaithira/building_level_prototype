@@ -13,8 +13,8 @@
   <script src="https://cesium.com/downloads/cesiumjs/releases/1.126/Build/Cesium/Cesium.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
   <link href="https://cesium.com/downloads/cesiumjs/releases/1.126/Build/Cesium/Widgets/widgets.css" rel="stylesheet" />
-  <script type="module" crossorigin src="/assets/index-DV5FAiF4.js"></script>
-  <link rel="stylesheet" crossorigin href="/assets/index-CB9O4DH_.css">
+  <script type="module" crossorigin src="/assets/index-BBhFy4O7.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-BuZaw0gI.css">
 </head>
 <body>
   <!-- Loading splash -->
@@ -315,16 +315,22 @@
 
     <section class="chartSection" data-section="forecast">
       <div class="scenario-intro">
-        <h3>LSTM energy forecast</h3>
+        <h3>LSTM utility forecast</h3>
         <p>
-          Simple LSTM on daily grid import (kWh). Data is split chronologically
-          <strong>80% train · 10% validation · 10% test</strong>, then rolled forward for a 14-day outlook.
+          Precomputed 30-day LSTM outlook per meter. Trained offline with a chronological
+          <strong>80% / 10% / 10%</strong> split, saved as CSV, and loaded here on request — no training in the browser.
         </p>
       </div>
       <div class="decisions-block chartCard">
+        <div class="forecast-targets" id="forecastTargets">
+          <button type="button" class="tbtn active" data-target="power">Power</button>
+          <button type="button" class="tbtn" data-target="gas">Gas</button>
+          <button type="button" class="tbtn" data-target="water">Water</button>
+          <button type="button" class="tbtn" data-target="battery">Battery</button>
+        </div>
         <div class="forecast-toolbar">
-          <button type="button" class="tbtn" id="forecastRunBtn">Run LSTM forecast</button>
-          <p class="muted forecast-status" id="forecastStatus">Click run to train in the browser (TensorFlow.js).</p>
+          <button type="button" class="tbtn" id="forecastRunBtn">Reload forecast CSV</button>
+          <p class="muted forecast-status" id="forecastStatus">Loads the saved LSTM forecast CSV for the selected meter.</p>
         </div>
         <div id="forecastKpis" class="scenario-kpis"></div>
         <div class="chartBox tall"><canvas id="chForecast"></canvas></div>

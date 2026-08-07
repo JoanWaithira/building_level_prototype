@@ -1,0 +1,27 @@
+{
+  "generatedAt": "2026-07-30T13:08:06",
+  "target": "power",
+  "label": "Daily grid import",
+  "unit": "kWh",
+  "model": "lstm",
+  "lookback": 14,
+  "forecastDays": 30,
+  "split": {
+    "trainPct": 80,
+    "valPct": 10,
+    "testPct": 10,
+    "nWindows": 351,
+    "nTrain": 280,
+    "nVal": 35,
+    "nTest": 36
+  },
+  "metrics": {
+    "trainMae": 13.027094841003418,
+    "valMae": 11.597628593444824,
+    "testMae": 11.209768295288086,
+    "testRmse": 13.35896110534668
+  },
+  "forecastTotal": 1627.903,
+  "sourceFile": "Total_power.csv",
+  "note": "Chronological 80/10/10 split. Regenerate by re-running this notebook."
+}

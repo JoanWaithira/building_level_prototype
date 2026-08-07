@@ -1689,6 +1689,12 @@ body.iaq-open { overflow: hidden; }
   line-height: 1.45;
 }
 
+.forecast-targets {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
 .forecast-toolbar {
   display: flex;
   align-items: center;

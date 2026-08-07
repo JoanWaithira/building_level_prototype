@@ -192,6 +192,20 @@
           <p class="chartDesc">Which weekdays typically send the most power back to the grid.</p>
           <div class="chartBox"><canvas id="chSolarWeekday"></canvas></div>
         </div>
+        <div class="chartCard hero wide">
+          <h4>Grid flow vs. battery capacity</h4>
+          <p class="chartDesc">
+            Grid import, grid export, and battery state of charge on the same timeline. Export spikes that
+            line up with a battery already at 100% are solar being sold back instead of stored — the
+            clearest sign that extra battery capacity would pay off.
+          </p>
+          <div id="battAdviceKpis" class="scenario-kpis"></div>
+          <div class="chartBox tall"><canvas id="chBatteryCorrelation"></canvas></div>
+          <p class="muted decisions-footnote">
+            "Estimated current capacity" is back-calculated from real charge/discharge energy vs. SoC change,
+            not assumed. To size a larger battery and see the projected saving, use the Scenarios tab.
+          </p>
+        </div>
         <div class="chartCard hero">
           <h4>Battery level</h4>
           <p class="chartDesc">How full your home battery was over time (100% = fully charged).</p>
@@ -314,16 +328,22 @@
 
     <section class="chartSection" data-section="forecast">
       <div class="scenario-intro">
-        <h3>LSTM energy forecast</h3>
+        <h3>LSTM utility forecast</h3>
         <p>
-          Precomputed LSTM outlook for daily grid import (kWh). Trained offline with a chronological
+          Precomputed 30-day LSTM outlook per meter. Trained offline with a chronological
           <strong>80% / 10% / 10%</strong> split, saved as CSV, and loaded here on request — no training in the browser.
         </p>
       </div>
       <div class="decisions-block chartCard">
+        <div class="forecast-targets" id="forecastTargets">
+          <button type="button" class="tbtn active" data-target="power">Power</button>
+          <button type="button" class="tbtn" data-target="gas">Gas</button>
+          <button type="button" class="tbtn" data-target="water">Water</button>
+          <button type="button" class="tbtn" data-target="battery">Battery</button>
+        </div>
         <div class="forecast-toolbar">
-          <button type="button" class="tbtn" id="forecastRunBtn">Load forecast CSV</button>
-          <p class="muted forecast-status" id="forecastStatus">Loads <code>lstm_import_forecast.csv</code> from energy data.</p>
+          <button type="button" class="tbtn" id="forecastRunBtn">Reload forecast CSV</button>
+          <p class="muted forecast-status" id="forecastStatus">Loads the saved LSTM forecast CSV for the selected meter.</p>
         </div>
         <div id="forecastKpis" class="scenario-kpis"></div>
         <div class="chartBox tall"><canvas id="chForecast"></canvas></div>

@@ -1,6 +1,6 @@
 /**
- * Load precomputed LSTM import forecast from public/energy CSVs.
- * Training happens offline via: npm run forecast:gen
+ * Load precomputed LSTM forecasts from public/forecasts CSVs.
+ * Training happens offline via: public/forecasts/lstm_forecast.ipynb
  */
 import { CONFIG } from "../config.js";
 
@@ -10,9 +10,9 @@ function parseForecastCsv(text) {
   const headers = lines[0].split(",").map((h) => h.trim().toLowerCase());
   const iDate = headers.indexOf("date");
   const iSeries = headers.indexOf("series");
-  const iKwh = headers.indexOf("kwh");
-  if (iDate < 0 || iSeries < 0 || iKwh < 0) {
-    throw new Error("Forecast CSV must have columns: date,series,kwh");
+  const iValue = headers.indexOf("value") >= 0 ? headers.indexOf("value") : headers.indexOf("kwh");
+  if (iDate < 0 || iSeries < 0 || iValue < 0) {
+    throw new Error("Forecast CSV must have columns: date,series,value");
   }
 
   const history = [];
@@ -21,9 +21,9 @@ function parseForecastCsv(text) {
     const cells = lines[i].split(",");
     const date = (cells[iDate] ?? "").trim();
     const series = (cells[iSeries] ?? "").trim().toLowerCase();
-    const kwh = parseFloat((cells[iKwh] ?? "").trim());
-    if (!date || !Number.isFinite(kwh)) continue;
-    const point = { date, value: kwh };
+    const value = parseFloat((cells[iValue] ?? "").trim());
+    if (!date || !Number.isFinite(value)) continue;
+    const point = { date, value };
     if (series === "forecast") forecast.push(point);
     else history.push(point);
   }
@@ -31,21 +31,22 @@ function parseForecastCsv(text) {
 }
 
 /**
- * @returns {Promise<{ok:boolean,error?:string,history?:any[],forecast?:any[],forecastTotal?:number,forecastDays?:number,lookback?:number,split?:object,metrics?:object,generatedAt?:string,source?:string}>}
+ * @param {"power"|"gas"|"water"|"battery"} target
+ * @returns {Promise<{ok:boolean,error?:string,history?:any[],forecast?:any[],forecastTotal?:number,forecastDays?:number,lookback?:number,split?:object,metrics?:object,generatedAt?:string,unit?:string,label?:string,source?:string}>}
  */
-export async function loadSavedImportForecast() {
-  const csvPath = CONFIG.ENERGY_FILE_PATHS.lstm_forecast;
-  const metaPath = CONFIG.ENERGY_FILE_PATHS.lstm_forecast_meta;
+export async function loadSavedForecast(target) {
+  const paths = CONFIG.FORECAST_FILE_PATHS[target];
+  if (!paths) return { ok: false, error: `Unknown forecast target: ${target}` };
 
   try {
     const [csvRes, metaRes] = await Promise.all([
-      fetch(encodeURI(csvPath)),
-      fetch(encodeURI(metaPath)),
+      fetch(encodeURI(paths.csv)),
+      fetch(encodeURI(paths.meta)),
     ]);
     if (!csvRes.ok) {
       return {
         ok: false,
-        error: `Forecast CSV missing (${csvPath}). Run: npm run forecast:gen`,
+        error: `Forecast CSV missing (${paths.csv}). Run public/forecasts/lstm_forecast.ipynb.`,
       };
     }
 
@@ -65,6 +66,9 @@ export async function loadSavedImportForecast() {
 
     return {
       ok: true,
+      target,
+      unit: meta.unit ?? "",
+      label: meta.label ?? target,
       history,
       forecast,
       forecastTotal: forecast.reduce((s, d) => s + d.value, 0),

@@ -1,0 +1,27 @@
+{
+  "generatedAt": "2026-07-30T13:09:09",
+  "target": "battery",
+  "label": "Daily battery import",
+  "unit": "kWh",
+  "model": "lstm",
+  "lookback": 14,
+  "forecastDays": 30,
+  "split": {
+    "trainPct": 80,
+    "valPct": 10,
+    "testPct": 10,
+    "nWindows": 238,
+    "nTrain": 190,
+    "nVal": 23,
+    "nTest": 25
+  },
+  "metrics": {
+    "trainMae": 1.4892799854278564,
+    "valMae": 0.6007160544395447,
+    "testMae": 0.7992458939552307,
+    "testRmse": 1.1856576204299927
+  },
+  "forecastTotal": 164.004,
+  "sourceFile": "battery.csv",
+  "note": "Chronological 80/10/10 split. Regenerate by re-running this notebook."
+}

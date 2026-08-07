@@ -1,0 +1,27 @@
+{
+  "generatedAt": "2026-07-30T13:08:30",
+  "target": "gas",
+  "label": "Daily gas usage",
+  "unit": "m3",
+  "model": "lstm",
+  "lookback": 14,
+  "forecastDays": 30,
+  "split": {
+    "trainPct": 80,
+    "valPct": 10,
+    "testPct": 10,
+    "nWindows": 351,
+    "nTrain": 280,
+    "nVal": 35,
+    "nTest": 36
+  },
+  "metrics": {
+    "trainMae": 0.7809332013130188,
+    "valMae": 0.5499165058135986,
+    "testMae": 0.44774967432022095,
+    "testRmse": 0.5539528727531433
+  },
+  "forecastTotal": 75.335,
+  "sourceFile": "Total_gas.csv",
+  "note": "Chronological 80/10/10 split. Regenerate by re-running this notebook."
+}

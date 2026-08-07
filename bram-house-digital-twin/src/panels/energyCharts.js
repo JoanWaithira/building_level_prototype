@@ -8,6 +8,7 @@ import {
   dayOfWeekAverages,
   selfSufficiencyPct,
   netSellerDaySplit,
+  batterySizingAdvice,
   formatValue,
 } from "../data/energyDataService.js";
 import {
@@ -28,6 +29,13 @@ const HORIZONS = [
 ];
 
 const TABS = ["overview", "electricity", "solar", "utilities", "scenarios", "decisions", "forecast"];
+
+const FORECAST_TARGETS = [
+  { key: "power", label: "Grid import", unit: "kWh", color: "#5eb8ff", fill: "rgba(94,184,255,0.18)" },
+  { key: "gas", label: "Gas usage", unit: "m³", color: "#fb923c", fill: "rgba(251,146,60,0.16)" },
+  { key: "water", label: "Water usage", unit: "L", color: "#38bdf8", fill: "rgba(56,189,248,0.16)" },
+  { key: "battery", label: "Battery import", unit: "kWh", color: "#a78bfa", fill: "rgba(167,139,250,0.16)" },
+];
 
 /** Twinlink chart palette */
 const C = {
@@ -57,7 +65,8 @@ let selectedHorizon = 30;
 let activeTab = "overview";
 const charts = new Map();
 let lastSlice = {};
-let lastForecast = null;
+const forecastCache = new Map();
+let activeForecastTarget = "power";
 let forecastRunning = false;
 
 export function openChartsDashboard(summary, tab = "overview") {
@@ -298,6 +307,12 @@ function makeChart(id, config) {
 const labels = (s) => s.map((d) => d.date);
 const values = (s) => s.map((d) => Math.round(d.value * 100) / 100);
 
+function mergedDates(seriesList) {
+  const dateSet = new Set();
+  seriesList.forEach((s) => s.forEach((d) => dateSet.add(d.date)));
+  return [...dateSet].sort();
+}
+
 function buildHorizonSelector() {
   const bar = document.getElementById("chartsHorizon");
   bar.innerHTML =
@@ -402,19 +417,24 @@ function updateStatsForTab() {
         ],
       ];
     })(),
-    forecast: lastForecast?.ok
-      ? [
+    forecast: (() => {
+      const target = FORECAST_TARGETS.find((t) => t.key === activeForecastTarget) ?? FORECAST_TARGETS[0];
+      const r = forecastCache.get(activeForecastTarget);
+      if (r?.ok) {
+        return [
+          ["Target", target.label],
           ["Split", "80 / 10 / 10"],
-          ["Test MAE", `${lastForecast.metrics.testMae?.toFixed(2) ?? "—"} kWh`],
-          ["14-day forecast", formatValue(lastForecast.forecastTotal, "kWh", 0)],
-          ["Lookback", `${lastForecast.lookback} days`],
-        ]
-      : [
-          ["Model", "LSTM"],
-          ["Split", "80 / 10 / 10"],
-          ["Target", "Grid import"],
-          ["Horizon", "14 days"],
-        ],
+          ["Test MAE", `${r.metrics.testMae?.toFixed(2) ?? "—"} ${target.unit}`],
+          [`${r.forecastDays}-day forecast`, formatValue(r.forecastTotal, target.unit, 0)],
+        ];
+      }
+      return [
+        ["Model", "LSTM"],
+        ["Split", "80 / 10 / 10"],
+        ["Target", target.label],
+        ["Horizon", "30 days"],
+      ];
+    })(),
   };
 
   el.innerHTML = (byTab[activeTab] ?? byTab.overview)
@@ -423,6 +443,26 @@ function updateStatsForTab() {
         `<div class="statCard"><span class="statLabel">${label}</span><span class="statVal ${cls ?? ""}">${val}</span></div>`,
     )
     .join("");
+}
+
+function renderBatteryAdviceKpis(advice) {
+  const el = document.getElementById("battAdviceKpis");
+  if (!el) return;
+  const capText =
+    advice.estimatedCapacityKWh != null ? formatValue(advice.estimatedCapacityKWh, "kWh", 1) : "—";
+  el.innerHTML = `
+    <div class="scenario-kpi">
+      <span class="scenario-kpi-val">${capText}</span>
+      <span class="scenario-kpi-lbl">Estimated current capacity</span>
+    </div>
+    <div class="scenario-kpi ${advice.wastedExportKWh > 0 ? "" : "ok"}">
+      <span class="scenario-kpi-val">${formatValue(advice.wastedExportKWh, "kWh", 1)}</span>
+      <span class="scenario-kpi-lbl">Exported while battery was full</span>
+    </div>
+    <div class="scenario-kpi">
+      <span class="scenario-kpi-val">${advice.fullTimeSharePct}%</span>
+      <span class="scenario-kpi-lbl">Time battery sat at 100%</span>
+    </div>`;
 }
 
 function buildChartInstances() {
@@ -464,6 +504,45 @@ function buildChartInstances() {
     options: { ...simpleOptions("%"), scales: pctScale },
   });
   makeChart("chSolarWeekday", bar("kWh"));
+  makeChart("chBatteryCorrelation", {
+    type: "line",
+    data: { labels: [], datasets: [] },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: { duration: 280 },
+      interaction: { mode: "index", intersect: false },
+      plugins: {
+        legend: {
+          labels: { color: C.text, boxWidth: 8, boxHeight: 8, font: { size: 12 }, padding: 16 },
+        },
+        tooltip: tooltipBase(),
+      },
+      scales: {
+        x: {
+          ticks: { color: C.tick, maxTicksLimit: 8, font: { size: 11 } },
+          grid: { display: false },
+          border: { display: false },
+        },
+        y: {
+          position: "left",
+          ticks: { color: C.tick, font: { size: 11 }, maxTicksLimit: 6 },
+          grid: { color: C.grid },
+          border: { display: false },
+          title: { display: true, text: "kWh per interval", color: C.tick, font: { size: 11 } },
+        },
+        y1: {
+          position: "right",
+          min: 0,
+          max: 100,
+          ticks: { color: C.tick, font: { size: 11 }, maxTicksLimit: 6 },
+          grid: { drawOnChartArea: false },
+          border: { display: false },
+          title: { display: true, text: "Battery SoC %", color: C.tick, font: { size: 11 } },
+        },
+      },
+    },
+  });
   makeChart("chBattery", {
     type: "line",
     data: { labels: [], datasets: [] },
@@ -542,6 +621,8 @@ function refreshCharts() {
   const batOut = slice(S, "batteryExportDaily");
   const batRange = filterByHorizon(S.batterySoCRange ?? [], selectedHorizon);
   const battery = filterByHorizon(S.batterySoC ?? [], selectedHorizon ? selectedHorizon * 6 : null);
+  const impSub = filterByHorizon(S.importSubDaily ?? [], selectedHorizon ? selectedHorizon * 6 : null);
+  const expSub = filterByHorizon(S.exportSubDaily ?? [], selectedHorizon ? selectedHorizon * 6 : null);
   const net = netDaily(imp, exp);
   const daySplit = netSellerDaySplit(net);
 
@@ -621,6 +702,59 @@ function refreshCharts() {
     lineDs("State of charge", values(battery), C.battery, "rgba(167,139,250,0.15)"),
   ]);
 
+  const corrLabels = mergedDates([impSub, expSub, battery]);
+  const impByDate = new Map(impSub.map((d) => [d.date, d.value]));
+  const expByDate = new Map(expSub.map((d) => [d.date, d.value]));
+  const socByDate = new Map(battery.map((d) => [d.date, d.value]));
+  setChart("chBatteryCorrelation", corrLabels, [
+    {
+      label: "Grid import",
+      data: corrLabels.map((d) => impByDate.get(d) ?? null),
+      borderColor: C.import,
+      backgroundColor: "transparent",
+      fill: false,
+      pointRadius: 0,
+      pointHoverRadius: 3,
+      borderWidth: 1.5,
+      tension: 0.2,
+      yAxisID: "y",
+      spanGaps: true,
+    },
+    {
+      label: "Grid export",
+      data: corrLabels.map((d) => expByDate.get(d) ?? null),
+      borderColor: C.export,
+      backgroundColor: "transparent",
+      fill: false,
+      pointRadius: 0,
+      pointHoverRadius: 3,
+      borderWidth: 1.5,
+      tension: 0.2,
+      yAxisID: "y",
+      spanGaps: true,
+    },
+    {
+      label: "Battery SoC",
+      data: corrLabels.map((d) => socByDate.get(d) ?? null),
+      borderColor: C.battery,
+      backgroundColor: "rgba(167,139,250,0.12)",
+      fill: true,
+      pointRadius: 0,
+      pointHoverRadius: 3,
+      borderWidth: 2,
+      tension: 0.2,
+      yAxisID: "y1",
+      spanGaps: true,
+    },
+  ]);
+  renderBatteryAdviceKpis(
+    batterySizingAdvice({
+      batterySoC: battery,
+      exportSubDaily: expSub,
+      estimatedBatteryCapacityKWh: S.estimatedBatteryCapacityKWh,
+    }),
+  );
+
   setChart("chBatteryFlow", labels(batIn.length ? batIn : batOut), [
     barDataset("Stored", values(batIn), C.export),
     barDataset("Released", values(batOut), C.peak),
@@ -670,25 +804,37 @@ function wireDecisions() {
 }
 
 function wireForecast() {
-  document.getElementById("forecastRunBtn")?.addEventListener("click", () => loadForecastCsv());
+  document.getElementById("forecastRunBtn")?.addEventListener("click", () => loadForecastCsv(activeForecastTarget, { force: true }));
+  document.querySelectorAll("#forecastTargets [data-target]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      activeForecastTarget = btn.dataset.target;
+      document.querySelectorAll("#forecastTargets [data-target]").forEach((b) =>
+        b.classList.toggle("active", b.dataset.target === activeForecastTarget),
+      );
+      showForecastState();
+    });
+  });
 }
 
 function showForecastState() {
-  if (lastForecast?.ok) {
-    renderForecastResult(lastForecast);
+  const cached = forecastCache.get(activeForecastTarget);
+  if (cached?.ok) {
+    renderForecastResult(cached);
+    updateStatsForTab();
     return;
   }
   const status = document.getElementById("forecastStatus");
   if (status && !forecastRunning) {
     status.textContent = "Click to load the saved LSTM forecast CSV (no training).";
   }
-  // Auto-load once when opening the tab
-  if (!lastForecast && !forecastRunning) loadForecastCsv();
+  // Auto-load once per target when selected
+  if (!cached && !forecastRunning) loadForecastCsv(activeForecastTarget);
   else updateStatsForTab();
 }
 
-async function loadForecastCsv() {
+async function loadForecastCsv(target, opts = {}) {
   if (forecastRunning) return;
+  if (!opts.force && forecastCache.has(target)) return;
   forecastRunning = true;
   const btn = document.getElementById("forecastRunBtn");
   const status = document.getElementById("forecastStatus");
@@ -696,9 +842,10 @@ async function loadForecastCsv() {
   if (status) status.textContent = "Loading forecast CSV…";
 
   try {
-    const { loadSavedImportForecast } = await import("../data/energyForecastService.js");
-    const result = await loadSavedImportForecast();
-    lastForecast = result;
+    const { loadSavedForecast } = await import("../data/energyForecastService.js");
+    const result = await loadSavedForecast(target);
+    forecastCache.set(target, result);
+    if (target !== activeForecastTarget) return;
     if (!result.ok) {
       if (status) status.textContent = result.error;
       setChart("chForecast", [], []);
@@ -728,6 +875,8 @@ async function loadForecastCsv() {
 }
 
 function renderForecastResult(result) {
+  const target = FORECAST_TARGETS.find((t) => t.key === result.target) ?? FORECAST_TARGETS[0];
+  const unit = target.unit;
   const hist = result.history ?? [];
   const fc = result.forecast ?? [];
   const allLabels = [...hist.map((d) => d.date), ...fc.map((d) => d.date)];
@@ -739,7 +888,7 @@ function renderForecastResult(result) {
   }
 
   setChart("chForecast", allLabels, [
-    lineDs("History (import)", histVals, C.import, C.importFill),
+    lineDs(`History (${target.label.toLowerCase()})`, histVals, target.color, target.fill),
     {
       label: "LSTM forecast",
       data: fcVals,
@@ -759,16 +908,16 @@ function renderForecastResult(result) {
   if (kpis) {
     kpis.innerHTML = `
       <div class="scenario-kpi">
-        <span class="scenario-kpi-val">${formatValue(result.forecastTotal, "kWh", 0)}</span>
-        <span class="scenario-kpi-lbl">Next ${result.forecastDays}d import</span>
+        <span class="scenario-kpi-val">${formatValue(result.forecastTotal, unit, 0)}</span>
+        <span class="scenario-kpi-lbl">Next ${result.forecastDays}d ${target.label.toLowerCase()}</span>
       </div>
       <div class="scenario-kpi">
         <span class="scenario-kpi-val">${result.metrics.testMae?.toFixed(2) ?? "—"}</span>
-        <span class="scenario-kpi-lbl">Test MAE (kWh)</span>
+        <span class="scenario-kpi-lbl">Test MAE (${unit})</span>
       </div>
       <div class="scenario-kpi">
         <span class="scenario-kpi-val">${result.metrics.valMae?.toFixed(2) ?? "—"}</span>
-        <span class="scenario-kpi-lbl">Val MAE (kWh)</span>
+        <span class="scenario-kpi-lbl">Val MAE (${unit})</span>
       </div>
       <div class="scenario-kpi">
         <span class="scenario-kpi-val">80/10/10</span>
@@ -782,10 +931,10 @@ function renderForecastResult(result) {
     table.innerHTML = `
       <tr><th>Metric</th><th>Value</th></tr>
       <tr><td>Windows (train / val / test)</td><td>${s.nTrain} / ${s.nVal} / ${s.nTest}</td></tr>
-      <tr><td>Train MAE</td><td>${result.metrics.trainMae?.toFixed(3) ?? "—"} kWh</td></tr>
-      <tr><td>Validation MAE</td><td>${result.metrics.valMae?.toFixed(3) ?? "—"} kWh</td></tr>
-      <tr><td>Test MAE</td><td>${result.metrics.testMae?.toFixed(3) ?? "—"} kWh</td></tr>
-      <tr><td>Test RMSE</td><td>${result.metrics.testRmse?.toFixed(3) ?? "—"} kWh</td></tr>
+      <tr><td>Train MAE</td><td>${result.metrics.trainMae?.toFixed(3) ?? "—"} ${unit}</td></tr>
+      <tr><td>Validation MAE</td><td>${result.metrics.valMae?.toFixed(3) ?? "—"} ${unit}</td></tr>
+      <tr><td>Test MAE</td><td>${result.metrics.testMae?.toFixed(3) ?? "—"} ${unit}</td></tr>
+      <tr><td>Test RMSE</td><td>${result.metrics.testRmse?.toFixed(3) ?? "—"} ${unit}</td></tr>
       <tr><td>Lookback</td><td>${result.lookback} days</td></tr>`;
   }
 
@@ -795,8 +944,8 @@ function renderForecastResult(result) {
       ? ` Saved ${new Date(result.generatedAt).toLocaleString()}.`
       : "";
     note.textContent =
-      `Loaded from energy CSV (no browser training). Target = daily grid import (kWh), split 80/10/10.` +
-      ` Regenerate offline with npm run forecast:gen.${gen}`;
+      `Loaded from CSV (no browser training). Target = ${target.label.toLowerCase()} (${unit}), split 80/10/10.` +
+      ` Regenerate with public/forecasts/lstm_forecast.ipynb.${gen}`;
   }
 }
 

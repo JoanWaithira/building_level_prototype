@@ -73,19 +73,101 @@ function dailyMax(rows, col) {
   return [...perDay.entries()].sort().map(([date, value]) => ({ date, value }));
 }
 
+// Fixed calendar grid for a given cadence (floor to the stepH-hour boundary),
+// as opposed to a walking window anchored to a series' first row. Two series
+// bucketed independently (e.g. from different CSVs, starting on different
+// dates) land on identical timestamps this way, which is what lets grid flow
+// be correlated against battery SoC at matching instants.
+function bucketStart(time, stepH) {
+  const bucketMs = stepH * 3600 * 1000;
+  return Math.floor(time.getTime() / bucketMs) * bucketMs;
+}
+function bucketLabel(bucketMs) {
+  return new Date(bucketMs).toISOString().slice(0, 16).replace("T", " ");
+}
+
 // Downsample an instantaneous column to one point every `stepH` hours.
 function sampled(rows, col, stepH = 4) {
-  const out = [];
-  let nextT = 0;
+  const perBucket = new Map();
   for (const r of rows) {
     if (r[col] == null) continue;
-    const t = r.time.getTime();
-    if (t >= nextT) {
-      out.push({ date: r.time.toISOString().slice(0, 16).replace("T", " "), value: r[col] });
-      nextT = t + stepH * 3600 * 1000;
-    }
+    perBucket.set(bucketStart(r.time, stepH), r[col]); // last value in the bucket wins
+  }
+  return [...perBucket.entries()]
+    .sort((a, b) => a[0] - b[0])
+    .map(([t, value]) => ({ date: bucketLabel(t), value }));
+}
+
+// Sub-daily consumption from cumulative meter columns, on the same calendar
+// grid as `sampled()` so the two series line up by timestamp.
+function intervalDeltas(rows, cols, stepH = 4) {
+  const perBucket = new Map();
+  for (const r of rows) {
+    const total = cols.reduce((acc, c) => (r[c] == null ? acc : (acc ?? 0) + r[c]), null);
+    if (total == null) continue;
+    perBucket.set(bucketStart(r.time, stepH), total); // last cumulative reading in the bucket wins
+  }
+  const entries = [...perBucket.entries()].sort((a, b) => a[0] - b[0]);
+  const out = [];
+  for (let i = 1; i < entries.length; i++) {
+    const v = entries[i][1] - entries[i - 1][1];
+    out.push({ date: bucketLabel(entries[i][0]), value: v >= 0 ? v : 0 }); // guard meter resets
   }
   return out;
+}
+
+// Effective installed battery capacity, back-calculated from real charge/
+// discharge energy vs. the resulting SoC change (kWh moved / %-points moved),
+// rather than assumed — median across intervals with a clear SoC swing.
+function estimateBatteryCapacityKWh(rows) {
+  const estimates = [];
+  let prev = null;
+  for (const r of rows) {
+    const soc = r["State of charge %"];
+    const imp = r["Import kWh"];
+    const exp = r["Export kWh"];
+    if (soc == null || imp == null || exp == null) {
+      prev = null;
+      continue;
+    }
+    if (prev) {
+      const dSoc = soc - prev.soc;
+      const dNet = (imp - prev.imp) - (exp - prev.exp);
+      if (Math.abs(dSoc) >= 3 && (dNet > 0) === (dSoc > 0)) {
+        estimates.push(Math.abs(dNet) / (Math.abs(dSoc) / 100));
+      }
+    }
+    prev = { soc, imp, exp };
+  }
+  if (!estimates.length) return null;
+  estimates.sort((a, b) => a - b);
+  return Math.round(estimates[Math.floor(estimates.length / 2)] * 10) / 10;
+}
+
+// How much grid export happened while the battery had no room left to store
+// it, and how often that was the case — the direct evidence for "would more
+// battery capacity help." Matched by timestamp, not by day.
+export function batterySizingAdvice(series) {
+  const soc = series?.batterySoC ?? [];
+  const exp = series?.exportSubDaily ?? [];
+  const socByDate = new Map(soc.map((d) => [d.date, d.value]));
+  let wastedExportKWh = 0;
+  let fullSamples = 0;
+  let matchedSamples = 0;
+  for (const d of exp) {
+    const s = socByDate.get(d.date);
+    if (s == null) continue;
+    matchedSamples++;
+    if (s >= 98) {
+      wastedExportKWh += d.value;
+      fullSamples++;
+    }
+  }
+  return {
+    estimatedCapacityKWh: series?.estimatedBatteryCapacityKWh ?? null,
+    wastedExportKWh: Math.round(wastedExportKWh * 10) / 10,
+    fullTimeSharePct: matchedSamples ? Math.round((fullSamples / matchedSamples) * 1000) / 10 : 0,
+  };
 }
 
 // Aggregate a daily series into monthly totals.
@@ -233,6 +315,9 @@ export async function loadEnergySummary() {
       batteryImportDaily: dailyDeltas(battery, ["Import kWh"]),
       batteryExportDaily: dailyDeltas(battery, ["Export kWh"]),
       batterySoCRange: dailyMinMax(battery, "State of charge %"),
+      importSubDaily: intervalDeltas(power, ["Import T1 kWh", "Import T2 kWh"], 4),
+      exportSubDaily: intervalDeltas(power, ["Export T1 kWh", "Export T2 kWh"], 4),
+      estimatedBatteryCapacityKWh: estimateBatteryCapacityKWh(battery),
     },
   };
 }
