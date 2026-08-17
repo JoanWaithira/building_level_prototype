@@ -238,6 +238,76 @@ export function selfSufficiencyPct(importDaily, exportDaily) {
   });
 }
 
+// Meteorological season for a "YYYY-MM-DD" date, with Dec grouped into the
+// following year's winter (e.g. Dec 2025 + Jan/Feb 2026 = "Winter 2025/26")
+// so a season's days stay contiguous instead of splitting across Jan 1.
+function seasonOf(dateStr) {
+  const [y, m] = dateStr.slice(0, 7).split("-").map(Number);
+  if (m === 12) return { label: `Winter ${y}/${String(y + 1).slice(2)}`, sortKey: `${y}-12` };
+  if (m <= 2) return { label: `Winter ${y - 1}/${String(y).slice(2)}`, sortKey: `${y - 1}-12` };
+  if (m <= 5) return { label: `Spring ${y}`, sortKey: `${y}-03` };
+  if (m <= 8) return { label: `Summer ${y}`, sortKey: `${y}-06` };
+  return { label: `Autumn ${y}`, sortKey: `${y}-09` };
+}
+
+// Per-season energy + battery-cycling averages, so seasons with heavier solar
+// swings (which cycle the battery harder) can be compared against seasons
+// that leave it mostly idle — a proxy for where wear accumulates fastest.
+// Always uses the full series, independent of the dashboard's horizon filter.
+export function seasonalEnergySummary(series) {
+  const buckets = new Map();
+  const bucket = (dateStr) => {
+    const { label, sortKey } = seasonOf(dateStr);
+    if (!buckets.has(sortKey)) {
+      buckets.set(sortKey, {
+        label,
+        sortKey,
+        importSum: 0,
+        importDays: 0,
+        exportSum: 0,
+        swingSum: 0,
+        swingDays: 0,
+        throughputKWh: 0,
+      });
+    }
+    return buckets.get(sortKey);
+  };
+
+  for (const d of series?.importDaily ?? []) {
+    const b = bucket(d.date);
+    b.importSum += d.value;
+    b.importDays++;
+  }
+  for (const d of series?.exportDaily ?? []) {
+    bucket(d.date).exportSum += d.value;
+  }
+  for (const d of series?.batterySoCRange ?? []) {
+    const b = bucket(d.date);
+    b.swingSum += d.swing;
+    b.swingDays++;
+  }
+  for (const d of series?.batteryImportDaily ?? []) {
+    bucket(d.date).throughputKWh += d.value;
+  }
+  for (const d of series?.batteryExportDaily ?? []) {
+    bucket(d.date).throughputKWh += d.value;
+  }
+
+  const capacity = series?.estimatedBatteryCapacityKWh ?? null;
+
+  return [...buckets.values()]
+    .sort((a, b) => a.sortKey.localeCompare(b.sortKey))
+    .map((b) => ({
+      label: b.label,
+      days: b.importDays,
+      avgImportKWh: b.importDays ? Math.round((b.importSum / b.importDays) * 100) / 100 : 0,
+      avgExportKWh: b.importDays ? Math.round((b.exportSum / b.importDays) * 100) / 100 : 0,
+      avgBatterySwingPct: b.swingDays ? Math.round((b.swingSum / b.swingDays) * 10) / 10 : 0,
+      throughputKWh: Math.round(b.throughputKWh * 10) / 10,
+      estCycles: capacity ? Math.round((b.throughputKWh / (2 * capacity)) * 10) / 10 : null,
+    }));
+}
+
 export function netSellerDaySplit(netDailySeries) {
   let buyer = 0, seller = 0, balanced = 0;
   for (const d of netDailySeries ?? []) {

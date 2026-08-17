@@ -9,6 +9,7 @@ import {
   selfSufficiencyPct,
   netSellerDaySplit,
   batterySizingAdvice,
+  seasonalEnergySummary,
   formatValue,
 } from "../data/energyDataService.js";
 import {
@@ -465,6 +466,65 @@ function renderBatteryAdviceKpis(advice) {
     </div>`;
 }
 
+function renderSeasonalComparison() {
+  if (!currentSummary) return;
+  const seasons = seasonalEnergySummary(currentSummary.series ?? {});
+  if (!seasons.length) return;
+  const seasonLabels = seasons.map((s) => `${s.label} (${s.days}d)`);
+
+  setChart("chSeasonal", seasonLabels, [
+    barDataset("Avg import kWh/day", seasons.map((s) => s.avgImportKWh), C.import),
+    barDataset("Avg export kWh/day", seasons.map((s) => s.avgExportKWh), C.export),
+  ]);
+
+  setChart("chSeasonalBattery", seasonLabels, [
+    {
+      label: "Avg daily swing %",
+      data: seasons.map((s) => s.avgBatterySwingPct),
+      backgroundColor: C.battery,
+      borderRadius: 4,
+      borderSkipped: false,
+      maxBarThickness: 36,
+      yAxisID: "y",
+    },
+    {
+      label: "kWh cycled",
+      data: seasons.map((s) => s.throughputKWh),
+      backgroundColor: C.peak,
+      borderRadius: 4,
+      borderSkipped: false,
+      maxBarThickness: 36,
+      yAxisID: "y1",
+    },
+  ]);
+
+  const kpis = document.getElementById("seasonalKpis");
+  if (!kpis) return;
+  const heaviest = seasons.reduce((a, b) => (b.avgBatterySwingPct > a.avgBatterySwingPct ? b : a));
+  const lightest = seasons.reduce((a, b) => (b.avgBatterySwingPct < a.avgBatterySwingPct ? b : a));
+  const ratio =
+    lightest.avgBatterySwingPct > 0
+      ? Math.round((heaviest.avgBatterySwingPct / lightest.avgBatterySwingPct) * 10) / 10
+      : null;
+  kpis.innerHTML = `
+    <div class="scenario-kpi">
+      <span class="scenario-kpi-val">${heaviest.label}</span>
+      <span class="scenario-kpi-lbl">Heaviest battery cycling</span>
+    </div>
+    <div class="scenario-kpi ok">
+      <span class="scenario-kpi-val">${lightest.label}</span>
+      <span class="scenario-kpi-lbl">Lightest battery cycling</span>
+    </div>
+    <div class="scenario-kpi">
+      <span class="scenario-kpi-val">${ratio != null ? `${ratio}×` : "—"}</span>
+      <span class="scenario-kpi-lbl">Cycling ratio (heaviest / lightest)</span>
+    </div>
+    <div class="scenario-kpi">
+      <span class="scenario-kpi-val">${heaviest.estCycles != null ? heaviest.estCycles : "—"}</span>
+      <span class="scenario-kpi-lbl">Est. full cycles, heaviest season</span>
+    </div>`;
+}
+
 function buildChartInstances() {
   if (typeof Chart === "undefined") {
     document.querySelector(".chartSection.active .chartsGrid").innerHTML =
@@ -550,6 +610,43 @@ function buildChartInstances() {
   });
   makeChart("chBatteryFlow", bar("kWh", true));
   makeChart("chBatterySwing", bar("%"));
+  makeChart("chSeasonal", bar("kWh"));
+  makeChart("chSeasonalBattery", {
+    type: "bar",
+    data: { labels: [], datasets: [] },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: { duration: 280 },
+      plugins: {
+        legend: {
+          labels: { color: C.text, boxWidth: 8, boxHeight: 8, font: { size: 12 }, padding: 16 },
+        },
+        tooltip: tooltipBase(),
+      },
+      scales: {
+        x: {
+          ticks: { color: C.tick, font: { size: 11 } },
+          grid: { display: false },
+          border: { display: false },
+        },
+        y: {
+          position: "left",
+          ticks: { color: C.tick, font: { size: 11 }, maxTicksLimit: 6 },
+          grid: { color: C.grid },
+          border: { display: false },
+          title: { display: true, text: "Avg daily swing %", color: C.tick, font: { size: 11 } },
+        },
+        y1: {
+          position: "right",
+          ticks: { color: C.tick, font: { size: 11 }, maxTicksLimit: 6 },
+          grid: { drawOnChartArea: false },
+          border: { display: false },
+          title: { display: true, text: "kWh cycled", color: C.tick, font: { size: 11 } },
+        },
+      },
+    },
+  });
   makeChart("chGas", bar("m³"));
   makeChart("chGasWeekday", bar("m³"));
   makeChart("chWater", bar("L"));
@@ -787,6 +884,8 @@ function refreshCharts() {
   setChart("chWaterWeekday", ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"], [
     barDataset("Avg litres", values(dayOfWeekAverages(water)), C.water),
   ]);
+
+  renderSeasonalComparison();
 
   if (activeTab === "scenarios") refreshScenario();
   if (activeTab === "decisions") refreshDecisions();

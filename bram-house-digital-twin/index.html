@@ -221,6 +221,24 @@
           <p class="chartDesc">How much the battery level changed each day — larger swings mean heavier use.</p>
           <div class="chartBox"><canvas id="chBatterySwing"></canvas></div>
         </div>
+        <div class="chartCard hero wide">
+          <h4>Seasonal comparison</h4>
+          <p class="chartDesc">
+            Average daily grid import/export by season, across the full period on record — independent of
+            the time-range selector above.
+          </p>
+          <div class="chartBox"><canvas id="chSeasonal"></canvas></div>
+        </div>
+        <div class="chartCard hero wide">
+          <h4>Seasonal battery cycling — a wear proxy</h4>
+          <p class="chartDesc">
+            How hard the battery cycles each season (daily swing % and total kWh charged/discharged).
+            Seasons with deeper, more frequent cycling put more wear on the battery than seasons where
+            it mostly sits idle — useful context alongside the estimated capacity above.
+          </p>
+          <div id="seasonalKpis" class="scenario-kpis"></div>
+          <div class="chartBox"><canvas id="chSeasonalBattery"></canvas></div>
+        </div>
       </div>
     </section>
 
